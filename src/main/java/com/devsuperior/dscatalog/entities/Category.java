@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Objects;
 
 @Entity
@@ -15,14 +16,20 @@ public class Category implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    private String nome;
+
+    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+    private Instant createdAt;
+
+    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+    private Instant updateAt;
 
     public Category() {
     }
 
     public Category(Long id, String nome) {
         this.id = id;
-        this.name = nome;
+        this.nome = nome;
     }
 
     public Long getId() {
@@ -34,12 +41,31 @@ public class Category implements Serializable {
     }
 
     public String getNome() {
-        return name;
+        return nome;
     }
 
     public void setNome(String nome) {
-        this.name = nome;
+        this.nome = nome;
     }
+
+    public Instant getUpdateAt() {
+        return updateAt;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    @PrePersist
+    public void prePersist(){
+        this.createdAt = Instant.now();
+    }
+
+    @PreUpdate
+    public void preUpdate(){
+        this.updateAt = Instant.now();
+    }
+
 
     @Override
     public boolean equals(Object o) {
