@@ -23,6 +23,8 @@ public class ProductRepositoryTests {
     }
 
     @Test
+
+    @Test
     public void deleteShouldDeleteObjectWhenIdExists(){
 
         repository.deleteById(exintingId);
