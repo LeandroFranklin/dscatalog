@@ -1,6 +1,7 @@
 package com.devsuperior.dscatalog.repositories;
 
 import com.devsuperior.dscatalog.entities.Product;
+import com.devsuperior.dscatalog.tests.Factory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,13 +17,28 @@ public class ProductRepositoryTests {
     private ProductRepository repository;
 
     private long exintingId;
+    private long notExistingId;
+    private long contTotalProducts;
 
     @BeforeEach
     void setUp() throws Exception{
         exintingId = 1L;
+        notExistingId = 55L;
+        contTotalProducts =25L;
     }
 
     @Test
+    public void saveShouldPersistWithAutoincrementWhenIdIsNull(){
+
+        Product product = Factory.createProduct();
+        product.setId(null);
+
+        product = repository.save(product);
+
+        Assertions.assertNotNull(product.getId());
+        Assertions.assertEquals(contTotalProducts + 1, product.getId());
+    }
+
 
     @Test
     public void deleteShouldDeleteObjectWhenIdExists(){
@@ -31,7 +47,22 @@ public class ProductRepositoryTests {
 
         Optional<Product> result = repository.findById(exintingId);
         Assertions.assertFalse(result.isPresent());
+    }
 
+    @Test
+    public void findByIdShoulReturnOptionalNotEmptyWhenIdExists(){
+
+        Optional<Product> result = repository.findById(exintingId);
+
+        Assertions.assertFalse(result.isEmpty());
+    }
+
+    @Test
+    public void findByIdShouldReturnOptionalEmptyWhenIdDoesNotExist(){
+
+        Optional<Product> result = repository.findById(notExistingId);
+
+        Assertions.assertTrue(result.isEmpty());
     }
 
 }
